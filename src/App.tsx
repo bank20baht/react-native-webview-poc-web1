@@ -1,12 +1,13 @@
-// App.tsx (React Website)
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const App: React.FC = () => {
+  const [messageFromReactNative, setMessageFromReactNative] = useState("");
+
   useEffect(() => {
     // Listen for messages from React Native WebView
     const messageHandler = (event: MessageEvent) => {
       console.log("Message received from React Native:", event.data);
-      alert(`Message from React Native: ${event.data}`);
+      setMessageFromReactNative(event.data); // Update state with the received message
     };
 
     window.addEventListener("message", messageHandler);
@@ -30,6 +31,10 @@ const App: React.FC = () => {
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>React Website</h1>
+      <div>
+        <h2>Message from React Native:</h2>
+        <p>{messageFromReactNative || "No message received yet"}</p>
+      </div>
       <button onClick={sendMessageToReactNative}>
         Send Message to React Native
       </button>
