@@ -1,51 +1,40 @@
-import { useState, useEffect } from "react";
+// App.tsx (React Website)
+import React, { useEffect } from "react";
 
-function App() {
-  const [storedValue, setStoredValue] = useState<string>("");
-
+const App: React.FC = () => {
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      try {
-        const messageFromApp = event.data;
-        console.log("Message from React Native app:", messageFromApp);
-        setStoredValue(messageFromApp);
-      } catch (error) {
-        console.error("Error handling message:", error);
-      }
+    // Listen for messages from React Native WebView
+    const messageHandler = (event: MessageEvent) => {
+      console.log("Message received from React Native:", event.data);
+      alert(`Message from React Native: ${event.data}`);
     };
 
-    window.addEventListener("message", handleMessage);
+    window.addEventListener("message", messageHandler);
 
     return () => {
-      window.removeEventListener("message", handleMessage);
+      window.removeEventListener("message", messageHandler);
     };
   }, []);
 
-  useEffect(() => {
-    const sendInitialMessage = async () => {
-      try {
-        await window.postMessage("Hello from React!");
-      } catch (error) {
-        console.error("Error sending initial message:", error);
-      }
-    };
-
-    sendInitialMessage();
-  }, []);
+  // Function to send a message back to React Native
+  const sendMessageToReactNative = () => {
+    // @ts-ignore
+    if (window.ReactNativeWebView) {
+      // @ts-ignore
+      window.ReactNativeWebView.postMessage("Hello from React Website!");
+    } else {
+      console.error("ReactNativeWebView is not defined");
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-2 justify-center items-center w-full min-h-screen">
-      <h1 className="text-6xl font-bold text-center">
-        React Native Webview POC
-      </h1>
-      <div className="text-2xl text-center">
-        Try passing value from mobile to Web application
-      </div>
-      <p className="mt-4 text-2xl text-center">
-        Stored Value From Mobile: {storedValue}
-      </p>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>React Website</h1>
+      <button onClick={sendMessageToReactNative}>
+        Send Message to React Native
+      </button>
     </div>
   );
-}
+};
 
 export default App;
