@@ -4,20 +4,33 @@ function App() {
   const [storedValue, setStoredValue] = useState<string>("");
 
   useEffect(() => {
-    // Function to handle messages from the React Native app
     const handleMessage = (event: MessageEvent) => {
-      const messageFromApp = event.data;
-      console.log("Message from React Native app:", messageFromApp);
-      setStoredValue(messageFromApp);
+      try {
+        const messageFromApp = event.data;
+        console.log("Message from React Native app:", messageFromApp);
+        setStoredValue(messageFromApp);
+      } catch (error) {
+        console.error("Error handling message:", error);
+      }
     };
 
-    // Listen for messages
     window.addEventListener("message", handleMessage);
 
-    // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("message", handleMessage);
     };
+  }, []);
+
+  useEffect(() => {
+    const sendInitialMessage = async () => {
+      try {
+        await window.postMessage("Hello from React!");
+      } catch (error) {
+        console.error("Error sending initial message:", error);
+      }
+    };
+
+    sendInitialMessage();
   }, []);
 
   return (
