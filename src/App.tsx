@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-const App: React.FC = () => {
+const WebApp = () => {
   const [messageFromReactNative, setMessageFromReactNative] = useState("");
 
   useEffect(() => {
-    // Listen for messages from React Native WebView
-    const messageHandler = (event: MessageEvent) => {
+    // @ts-ignore
+    const messageHandler = (event) => {
       console.log("Message received from React Native:", event.data);
-      setMessageFromReactNative(event.data); // Update state with the received message
+      setMessageFromReactNative(event.data);
     };
 
     window.addEventListener("message", messageHandler);
@@ -17,14 +17,11 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Function to send a message back to React Native
   const sendMessageToReactNative = () => {
     // @ts-ignore
     if (window.ReactNativeWebView) {
       // @ts-ignore
       window.ReactNativeWebView.postMessage("Hello from React Website!");
-    } else {
-      console.error("ReactNativeWebView is not defined");
     }
   };
 
@@ -42,4 +39,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default WebApp;
